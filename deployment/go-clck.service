@@ -1,0 +1,15 @@
+[Unit]
+Description=Url Shortener
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/home/go-clck
+ExecStart=/home/go-clck/go-clck
+Restart=always
+RestartSec=4
+StandardOutput=inherit
+EnvironmentFile=/home/go-clck/config.env
+
+[Install]
+WantedBy=multi-user.target
