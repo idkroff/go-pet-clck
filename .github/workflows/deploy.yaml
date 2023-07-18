@@ -11,7 +11,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      HOST: root@81.200.145.202
+      HOST: root@80.90.181.153
       DEPLOY_DIRECTORY: /home/go-clck
       CONFIG_PATH: /home/go-clck/config/prod.yaml
       ENV_FILE_PATH: /home/go-clck/config.env
