@@ -2,7 +2,9 @@ package main
 
 import (
 	"go-clck/internal/config"
-	"go-clck/internal/http-server/handlers/url/save"
+	redirectHandler "go-clck/internal/http-server/handlers/redirect"
+	deleteURLHandler "go-clck/internal/http-server/handlers/url/delete"
+	saveURLHandler "go-clck/internal/http-server/handlers/url/save"
 	mwLogger "go-clck/internal/http-server/middleware/logger"
 	"go-clck/internal/lib/logger/handlers/slogpretty"
 	"go-clck/internal/lib/logger/sl"
@@ -42,7 +44,16 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	router.Post("/url", save.New(log, storage))
+	router.Route("/url", func(r chi.Router) {
+		r.Use(middleware.BasicAuth("go-clck", map[string]string{
+			config.HTTPServer.Username: config.HTTPServer.Password,
+		}))
+
+		r.Post("/", saveURLHandler.New(log, storage))
+		r.Delete("/", deleteURLHandler.New(log, storage))
+	})
+
+	router.Get("/{alias}", redirectHandler.New(log, storage))
 
 	log.Info("starting server", slog.String("address", config.Address))
 
